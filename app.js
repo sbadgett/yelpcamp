@@ -8,7 +8,6 @@ const mongoose = require("mongoose");
 const engine = require("ejs-mate");
 const ExpressError = require("./util/ExpressError");
 const methodOverride = require("method-override");
-const Joi = require("joi");
 const campgroundRoutes = require("./routes/campgrounds");
 const reviewRoutes = require("./routes/reviews");
 const userRoutes = require("./routes/users");
@@ -19,9 +18,14 @@ const local = require("passport-local");
 const User = require("./models/user");
 const sanitize = require("express-mongo-sanitize");
 const helmet = require("helmet");
+const mongoDBStore = require("connect-mongo")(session);
+const secret = process.env.SECRET || "secretcode";
+
+const mongodb_url =
+  process.env.MONGODB_URL || "mongodb://localhost:27017/yelp-camp";
 
 //MongoDB connection
-mongoose.connect("mongodb://localhost:27017/yelp-camp", {
+mongoose.connect(mongodb_url, {
   useNewUrlParser: true,
   useCreateIndex: true,
   useUnifiedTopology: true,
@@ -52,8 +56,19 @@ app.use(
   })
 );
 
+const store = new mongoDBStore({
+  url: mongodb_url,
+  secret: "secretCode",
+  touchAfter: 24 * 3600, //24 Hours
+});
+
+store.on("error", function (e) {
+  console.log("Session Store Error", e);
+});
+
 //Set up and initialize session attributes
 const sessionConfig = {
+  store,
   name: "session",
   secret: "secretCode",
   resave: false,
@@ -101,6 +116,8 @@ app.use((err, req, res, next) => {
   res.render("error", { err });
 });
 
-app.listen(3000, () => {
-  console.log("YelpCamp listening on port 3000.");
+const port = process.env.PORT || 3000;
+
+app.listen(port, () => {
+  console.log(`Server listening on port {port}`);
 });
