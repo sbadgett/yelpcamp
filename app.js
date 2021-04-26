@@ -113,7 +113,7 @@ app.use((err, req, res, next) => {
   res.render("error", { err });
 });
 
-const port = 3500;
+const port = process.env.PORT || 3500;
 
 app.listen(port, () => {
   console.log(`Server listening on port ${port}`);
