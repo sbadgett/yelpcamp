@@ -1,7 +1,4 @@
-//if (process.env.NODE_ENV !== "production") {
 require("dotenv").config();
-//}
-
 const express = require("express");
 const path = require("path");
 const mongoose = require("mongoose");
@@ -116,8 +113,8 @@ app.use((err, req, res, next) => {
   res.render("error", { err });
 });
 
-const port = process.env.PORT || 3000;
+const port = 3500;
 
 app.listen(port, () => {
-  console.log(`Server listening on port {port}`);
+  console.log(`Server listening on port ${port}`);
 });

@@ -69,7 +69,7 @@ module.exports.editCampground = async (req, res) => {
   await campground.save();
   req.flash("success", "Successfully updated the campground!");
   //Redirect to show campground view for this campground
-  res.redirect(`/campgrounds/${camp._id}`);
+  res.redirect(`/campgrounds/${campground._id}`);
 };
 
 module.exports.deleteCampground = async (req, res) => {
